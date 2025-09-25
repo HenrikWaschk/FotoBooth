@@ -1,16 +1,17 @@
-# This is a sample Python script.
+from kivy.app import App
+from kivy.uix.screenmanager import ScreenManager
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+#Importing Global constants here
+from global_variables import MyColor
 
+from fotoScreen import FotoBoxScreen
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+class FotoBoxApp(App):
+    def build(self):
+        sm = ScreenManager()
+        sm.add_widget(FotoBoxScreen(name='fotobox'))
 
+        return sm
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    FotoBoxApp().run()

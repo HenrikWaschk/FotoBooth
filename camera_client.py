@@ -1,8 +1,6 @@
-import time
 from abc import ABC, abstractmethod
 from datetime import datetime
 from pathlib import Path
-
 from global_variables import VideoParameters
 
 #abstractclass
@@ -22,7 +20,6 @@ class CameraClient(ABC):
     @abstractmethod
     def get_frame(self):
         pass
-
 
 class ComputerVisionCamera(CameraClient):
     def __init__(self):

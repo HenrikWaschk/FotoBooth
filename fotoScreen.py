@@ -1,33 +1,18 @@
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import Image
-from kivy.uix.button import Button
 from kivy.clock import Clock
 from kivy.graphics.texture import Texture
 from kivy.uix.screenmanager import Screen
 from kivy.uix.label import Label
 from kivy.uix.floatlayout import FloatLayout
 from kivy.metrics import dp
-from kivy.graphics import Color, RoundedRectangle
-from kivy.uix.anchorlayout import AnchorLayout
-from datetime import datetime
-import cv2
 import os
-import glob
-from PIL import Image as PILImage
-#import typeemail
-import asyncio
-#from picamera2 import Picamera2
-import numpy as np
-import smtplib
-from email.message import EmailMessage
-from pathlib import Path
 from camera_client import ComputerVisionCamera
 
 from neonbutton import NeonButton
 from stepProgress import StepProgress
 from global_variables import MyColor
 
-BASE_DIR = Path(__file__).resolve().parent
 
 class FotoBoxUI(FloatLayout):
     def __init__(self, **kwargs):
@@ -95,7 +80,7 @@ class FotoBoxUI(FloatLayout):
     def update(self, dt):
         frame = self.cameraClient.get_frame()
         if frame is not None:
-
+            # Konvertieren in RGB für Kivy
             texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='rgb')
             texture.blit_buffer(frame.tobytes(), colorfmt='rgb', bufferfmt='ubyte')
             self.image_widget.texture = texture
@@ -109,6 +94,10 @@ class FotoBoxUI(FloatLayout):
             self.start_button.opacity = 0
             self.start_button.disabled = True
             self.start_countdown()
+
+#--------------------------------------------------------------------------------------
+#Start of the foto logic
+#--------------------------------------------------------------------------------------
 
     def start_countdown(self):
         self.timer_value = 5
@@ -127,21 +116,23 @@ class FotoBoxUI(FloatLayout):
             if self.photo_count < 3:
                 Clock.schedule_once(lambda dt: self.start_countdown(), 1.5)
             else:
-                Clock.schedule_once(self.create_and_show_photostrip, 1.0)
+                #Clock.schedule_once(self.create_and_show_photostrip, 1.0)
                 self.timer_running = False
                 self.start_button.opacity = 1
                 self.start_button.disabled = False
         return True
 
     def turn_light_on(self):
-        os.system('cd /home/kdp/433Utils/RPi_utils/ && python3 steckdose_on.py')
+        os.system('cd /home/kdp/wiringpi/433Utils/RPi_utils/ && ./send 11111 1 1')
         Clock.schedule_once(self.take_photo_and_turn_light_off, 1)
 
-    async def take_photo_with_light(self):
-        os.system('cd /home/kdp/433Utils/RPi_utils/ && python3 steckdose_on.py')
-        await asyncio.sleep(0.5)
+    def take_photo_and_turn_light_off(self, dt):
         self.cameraClient.take_picture()
-        os.system('cd /home/kdp/433Utils/RPi_utils/ && python3 steckdose_off.py')
+        os.system('cd /home/kdp/wiringpi/433Utils/RPi_utils/ && ./send 11111 1 0')
+
+#--------------------------------------------------------------------------------------------------
+#End of foto logic
+#--------------------------------------------------------------------------------------------------
 
 class FotoBoxScreen(Screen):
     def __init__(self, **kwargs):

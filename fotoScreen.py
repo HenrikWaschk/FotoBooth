@@ -7,16 +7,20 @@ from kivy.uix.label import Label
 from kivy.uix.floatlayout import FloatLayout
 from kivy.metrics import dp
 import os
+
 from camera_client import ComputerVisionCamera
 
+from foto_strip_handler import FotoStripHandler
 from neonbutton import NeonButton
 from stepProgress import StepProgress
-from global_variables import MyColor
-
+from global_variables import MyColor,ScreenNames
 
 class FotoBoxUI(FloatLayout):
-    def __init__(self, **kwargs):
+    def __init__(self,goto_next_screen = None, **kwargs):
         super(FotoBoxUI, self).__init__(**kwargs)
+
+        #Dirty fix for accessing the goto function inside the screen class
+        self.goto_next_screen = goto_next_screen
 
         # Progress über gesamte Breite oben
         self.progress = StepProgress(current_step=3)
@@ -87,6 +91,10 @@ class FotoBoxUI(FloatLayout):
         else:
             print("Error: Could not read frame from camera.")
 
+    # --------------------------------------------------------------------------------------
+    # Start of the foto logic
+    # --------------------------------------------------------------------------------------
+
     def start_photobox(self, instance):
         if not self.timer_running:
             self.timer_running = True
@@ -94,10 +102,6 @@ class FotoBoxUI(FloatLayout):
             self.start_button.opacity = 0
             self.start_button.disabled = True
             self.start_countdown()
-
-#--------------------------------------------------------------------------------------
-#Start of the foto logic
-#--------------------------------------------------------------------------------------
 
     def start_countdown(self):
         self.timer_value = 5
@@ -116,10 +120,17 @@ class FotoBoxUI(FloatLayout):
             if self.photo_count < 3:
                 Clock.schedule_once(lambda dt: self.start_countdown(), 1.5)
             else:
-                #Clock.schedule_once(self.create_and_show_photostrip, 1.0)
                 self.timer_running = False
                 self.start_button.opacity = 1
                 self.start_button.disabled = False
+                Clock.schedule_interval(self.await_and_handle_fotos, 0.1)
+        return True
+
+    def await_and_handle_fotos(self,dt):
+        if FotoStripHandler.three_fotos_exist():
+            FotoStripHandler.create_photostrip()
+            self.goto_next_screen()
+            return False
         return True
 
     def turn_light_on(self):
@@ -135,9 +146,10 @@ class FotoBoxUI(FloatLayout):
 #--------------------------------------------------------------------------------------------------
 
 class FotoBoxScreen(Screen):
+
     def __init__(self, **kwargs):
         super(FotoBoxScreen, self).__init__(**kwargs)
-        self.fotobox_ui = FotoBoxUI()
+        self.fotobox_ui = FotoBoxUI(self.goto_fotostrip_screen)
         self.add_widget(self.fotobox_ui)
 
     def on_pre_enter(self, *args):
@@ -149,3 +161,7 @@ class FotoBoxScreen(Screen):
 
     def on_stop(self):
         self.fotobox_ui.on_stop()
+
+    def goto_fotostrip_screen(self):
+        self.manager.transition.direction = 'left'
+        self.manager.current = ScreenNames.FOTO_STRIP

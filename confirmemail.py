@@ -1,15 +1,10 @@
-from kivy.uix.checkbox import CheckBox
-from kivy.uix.widget import Widget
 from mycheckbox import My_CheckBox
-from pathlib import Path
 from kivy.uix.screenmanager import Screen
 from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.metrics import dp
-from kivy.graphics import Color, RoundedRectangle, Line
 
-from global_variables import Email,ScreenNames,MyColor,AssetPath
+from global_variables import Session,ScreenNames,MyColor,AssetPath
 from neonbutton import NeonButton
 from stepProgress import StepProgress
 import typeemail  # Import the global variable
@@ -143,29 +138,29 @@ class ConfirmEmail(Screen):
         self.add_widget(layout)
 
     def on_pre_enter(self, *args):
-        Email.datenschutz_bestaetigt = False
+        Session.datenschutz_bestaetigt = False
         if (typeemail.typed_email == ""):
-            Email.bestaetigt = True
+            Session.bestaetigt = True
         else:
-            Email.bestaetigt = False
+            Session.bestaetigt = False
         from typeemail import typed_email  # Re-import to get the updated value
         self.email_label.text = typed_email
-        self.email_checkbox.active = Email.bestaetigt
-        self.datenschutz_checkbox.active = Email.datenschutz_bestaetigt
+        self.email_checkbox.active = Session.bestaetigt
+        self.datenschutz_checkbox.active = Session.datenschutz_bestaetigt
 
     def _update_label_text(self, instance, value):
         instance.text_size = instance.size
 
     def datenschutz_button(self, instance):
-        Email.datenschutz_bestaetigt = not Email.datenschutz_bestaetigt
-        self.datenschutz_checkbox.active = Email.datenschutz_bestaetigt
+        Session.datenschutz_bestaetigt = not Session.datenschutz_bestaetigt
+        self.datenschutz_checkbox.active = Session.datenschutz_bestaetigt
 
     def email_bestaetigen_button(self, instance):
-        Email.bestaetigt = not Email.bestaetigt
-        self.email_checkbox.active = Email.bestaetigt
+        Session.bestaetigt = not Session.bestaetigt
+        self.email_checkbox.active = Session.bestaetigt
 
     def goto_fotobox(self, instance):
-        if (Email.bestaetigt & Email.datenschutz_bestaetigt):
+        if (Session.bestaetigt & Session.datenschutz_bestaetigt):
             self.manager.transition.direction = 'left'
             self.manager.current = 'fotobox'
 

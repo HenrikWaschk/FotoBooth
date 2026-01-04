@@ -1,14 +1,11 @@
-from pathlib import Path
-
 from kivy.metrics import dp
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
-from kivy.graphics import Color, RoundedRectangle, Line
+from kivy.graphics import Color, RoundedRectangle
 
-import global_variables
-from global_variables import MyColor,AssetPath,ScreenNames
+from global_variables import MyColor,AssetPath,ScreenNames,Session
 
 class Normal_Button(Button):
     def __init__(self, **kwargs):
@@ -58,6 +55,6 @@ class DatenschutzReader(Screen):
         self.add_widget(layout)
 
     def goto_confirmemail(self, instance):
-        Read_Datenschutzerklärung = True
+        Session.datenschutz_gelesen = True
         self.manager.transition.direction = 'up'
         self.manager.current = ScreenNames.CONFIRM_EMAIL

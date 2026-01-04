@@ -10,8 +10,6 @@ from VirtualKeyboard import VirtualKeyboard
 from global_variables import ScreenNames,MyColor,AssetPath,Email
 from stepProgress import StepProgress
 
-from pathlib import Path
-
 typed_email = ""  # Global variable to store the email
 
 #Title,Textbox,Keyboard,Weiter Button,Email Warning Label
@@ -47,7 +45,7 @@ class TypeEmail(Screen):
         info = Label(
             text="Wohin sollen wir deinen Fotostreifen schicken?",
             font_size=dp(64),
-            font_name=str(Path.cwd().joinpath('Assets').joinpath('Roc_Grotesk_Regular.otf')),
+            font_name=AssetPath.ROC_GROTESK_REGULAR,
             color=(MyColor.NEON),
             size_hint=(0.9, None), height=dp(60),
             pos_hint={'center_x':List_X[0], 'y':List_Y[0]}
@@ -93,7 +91,7 @@ class TypeEmail(Screen):
         self.warning_label = Label(
             text="",
             font_size=dp(32),  # größer
-            font_name=str(Path.cwd().joinpath('Assets').joinpath('Roc_Grotesk_Regular.otf')),
+            font_name=AssetPath.ROC_GROTESK_REGULAR,
             color=(1, 0.2, 0.2, 1),  # Rot
             size_hint=(0.9, None),
             height=dp(40),

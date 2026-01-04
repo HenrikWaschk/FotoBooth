@@ -13,7 +13,7 @@ from kivy.uix.image import Image
 from kivy.core.image import Image as CoreImage
 from kivy.animation import Animation
 
-from global_variables import ScreenNames
+from global_variables import ScreenNames,AssetPath
 
 #from fotobox import try_send_unsent_strips
 
@@ -85,17 +85,17 @@ class CentralBrand(Widget):
         starten_path = asset("Starten.png")
 
         # Logo oben (engerer Abstand)
-        self.logo = SmoothImage(source=logo_path, size=(400, 180), snap=False)
+        self.logo = SmoothImage(source=AssetPath.LOGO, size=(400, 180), snap=False)
         self.logo.pos_hint = {'center_x': 0.5, 'center_y': 0.62}
         layout.add_widget(self.logo)
 
         # Fotobooth näher ans Logo
-        self.fotobooth = SmoothImage(source=fotobooth_path, size=(600, 180), snap=False)
+        self.fotobooth = SmoothImage(source=AssetPath.FOTOBOOTH, size=(600, 180), snap=False)
         self.fotobooth.pos_hint = {'center_x': 0.5, 'center_y': 0.50}
         layout.add_widget(self.fotobooth)
 
         # Starten-Button (pulsierend — exakt wie am Anfang: Größe + Opacity)
-        self.starten = SmoothImage(source=starten_path, size=(500, 180), snap=False)
+        self.starten = SmoothImage(source=AssetPath.STARTEN, size=(500, 180), snap=False)
         self.starten.pos_hint = {'center_x': 0.5, 'center_y': 0.32}
         layout.add_widget(self.starten)
         Clock.schedule_once(lambda dt: self._pulse(), 0)
@@ -288,28 +288,28 @@ class StartScreen(Screen):
         right_top_third = (int(Window.width * 0.5), top_y0, Window.width, Window.height)
 
         # Smileys (Hälfte links, Hälfte rechts)
-        smiley_path = asset("smiley.png")
+        smiley_path = AssetPath.SMILEY
         self.smileys = []
         total_smileys = 10
         left_count = total_smileys // 2     # 5
         right_count = total_smileys - left_count  # 5
 
         for _ in range(left_count):
-            s = BouncingSprite(self.central, smiley_path, (80, 80),
+            s = BouncingSprite(self.central, AssetPath.SMILEY, (80, 80),
                                spawn_rect=left_top_third, spawn_margin=10,
                                others_for_spawn_check=self.smileys)
             self.smileys.append(s)
             layout.add_widget(s)
 
         for _ in range(right_count):
-            s = BouncingSprite(self.central, smiley_path, (80, 80),
+            s = BouncingSprite(self.central, AssetPath.SMILEY, (80, 80),
                                spawn_rect=right_top_third, spawn_margin=10,
                                others_for_spawn_check=self.smileys)
             self.smileys.append(s)
             layout.add_widget(s)
 
         # Disco-Kugeln (Hälfte links, Hälfte rechts)
-        disco_path = asset("Disko.png")  # ändere zu 'Disco.png' falls nötig
+        disco_path = AssetPath.DISCO  # ändere zu 'Disco.png' falls nötig
         self.discos = []
         total_discos = 5
         left_d = total_discos // 2          # 2
@@ -318,7 +318,7 @@ class StartScreen(Screen):
         # links
         for _ in range(left_d):
             others = self.smileys + self.discos
-            d = BouncingSprite(self.central, disco_path, (80, 80),
+            d = BouncingSprite(self.central, AssetPath.DISCO, (80, 80),
                                spawn_rect=left_top_third, spawn_margin=10,
                                others_for_spawn_check=others)
             self.discos.append(d)
@@ -327,7 +327,7 @@ class StartScreen(Screen):
         # rechts
         for _ in range(right_d):
             others = self.smileys + self.discos
-            d = BouncingSprite(self.central, disco_path, (80, 80),
+            d = BouncingSprite(self.central, AssetPath.DISCO, (80, 80),
                                spawn_rect=right_top_third, spawn_margin=10,
                                others_for_spawn_check=others)
             self.discos.append(d)
@@ -363,9 +363,6 @@ class StartScreen(Screen):
             self._idle_retry_event = None
             return
 
-        # Pfade wie im restlichen Programm (CWD wird beim Start gesetzt)
-        csv_path = str(Path.cwd().joinpath('email_strip.csv'))
-        photo_dir = str(Path.cwd().joinpath('Photos'))
 
         try:
             #try_send_unsent_strips(csv_path, photo_dir)

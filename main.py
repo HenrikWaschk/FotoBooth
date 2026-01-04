@@ -8,7 +8,7 @@ from typeemail import TypeEmail
 from confirmemail import ConfirmEmail
 from datenschutz_reader import DatenschutzReader
 from fotoScreen import FotoBoxScreen
-
+from FotoStripScreen import FotoStripScreen
 
 class FotoBoxApp(App):
     def build(self):
@@ -18,7 +18,8 @@ class FotoBoxApp(App):
         sm.add_widget(ConfirmEmail(name=ScreenNames.CONFIRM_EMAIL))
         sm.add_widget(DatenschutzReader(name=ScreenNames.DATENSCHUTZ_READER))
         sm.add_widget(FotoBoxScreen(name=ScreenNames.FOTOBOX))
-        sm.current = ScreenNames.START
+        sm.add_widget(FotoStripScreen(name=ScreenNames.FOTO_STRIP))
+        sm.current = ScreenNames.FOTOBOX
         return sm
 
 if __name__ == '__main__':

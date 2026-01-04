@@ -1,4 +1,3 @@
-from pathlib import Path
 from kivy.graphics import Line, Color
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.image import Image

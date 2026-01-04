@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
 from pathlib import Path
-from global_variables import VideoParameters
+from global_variables import VideoParameters,Session
 
 #abstractclass
 class CameraClient(ABC):
@@ -67,6 +67,7 @@ class ComputerVisionCamera(CameraClient):
             #TODO: put that in a separate handler this does not belong in the camera client
                 filename = datetime.now().strftime(
                     str(Path.cwd().joinpath('Photos').joinpath('photo_%Y%m%d_%H%M%S.jpg')))
+                Session.photo_paths.append(filename)
                 self.cv2.imwrite(filename, frame)
             else:
                 print("Error: Could not capture photo frame.")
